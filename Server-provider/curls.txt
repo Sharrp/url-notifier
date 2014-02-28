@@ -1,0 +1,7 @@
+curl -X POST -H "Content-Type: application/json" -d '{"did":"3908234837","token":"some_token"}' http://5hrp.pythonanywhere.com/device/
+
+curl -X POST -H "Content-Type: application/json" -d '{"did":"3908234837","token":"some_token"}' http://localhost:5000/device/
+
+curl -X POST -H "Content-Type: application/json" -d '{"udid":"0"}' http://localhost:5000/url/
+
+curl -X POST -H "Content-Type: application/json" -d '{"udid":"0"}' http://5hrp.pythonanywhere.com/url/
