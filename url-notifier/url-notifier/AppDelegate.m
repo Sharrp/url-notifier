@@ -12,11 +12,44 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-    self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
+    self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]] ;
+    
     // Override point for customization after application launch.
-    self.window.backgroundColor = [UIColor whiteColor];
+    [[UIApplication sharedApplication] registerForRemoteNotificationTypes:
+     (UIRemoteNotificationTypeBadge | UIRemoteNotificationTypeSound | UIRemoteNotificationTypeAlert)];
+    
+    self.mainVC = [[MainViewController alloc] initWithNibName:@"MainViewController" bundle:nil];
+    NSDictionary *payload = [launchOptions objectForKey:UIApplicationLaunchOptionsRemoteNotificationKey];
+    NSLog(@"Payload: %@", payload);
+    if (payload != nil && payload[@"url"] != nil)
+    {
+        self.mainVC.urlToOpen = [NSURL URLWithString:payload[@"url"]];
+    }
+    UINavigationController *nav = [[UINavigationController alloc]  initWithRootViewController:self.mainVC];
+    
+    self.window.rootViewController = nav;
     [self.window makeKeyAndVisible];
+    
     return YES;
+}
+
+- (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo
+{
+    NSLog(@"User info: %@", userInfo);
+    if (userInfo != nil && userInfo[@"url"] != nil)
+    {
+        [self.mainVC openURL:[NSURL URLWithString:userInfo[@"url"]]];
+    }
+}
+
+- (void)application:(UIApplication*)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData*)deviceToken
+{
+	NSLog(@"My token is: %@", deviceToken);
+}
+
+- (void)application:(UIApplication*)application didFailToRegisterForRemoteNotificationsWithError:(NSError*)error
+{
+	NSLog(@"Failed to get token, error: %@", error);
 }
 
 - (void)applicationWillResignActive:(UIApplication *)application

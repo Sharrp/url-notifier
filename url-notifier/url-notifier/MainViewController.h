@@ -10,4 +10,8 @@
 
 @interface MainViewController : UIViewController
 
+@property (strong, nonatomic) NSURL *urlToOpen;
+
+- (void) openURL:(NSURL *)url;
+
 @end

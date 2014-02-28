@@ -19,6 +19,8 @@
 		750EE73218BFE48700071F54 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 750EE71A18BFE48700071F54 /* UIKit.framework */; };
 		750EE73A18BFE48700071F54 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 750EE73818BFE48700071F54 /* InfoPlist.strings */; };
 		750EE73C18BFE48700071F54 /* url_notifierTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 750EE73B18BFE48700071F54 /* url_notifierTests.m */; };
+		750EE74818BFE53A00071F54 /* MainViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 750EE74618BFE53A00071F54 /* MainViewController.m */; };
+		750EE74918BFE53A00071F54 /* MainViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 750EE74718BFE53A00071F54 /* MainViewController.xib */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -48,6 +50,9 @@
 		750EE73718BFE48700071F54 /* url-notifierTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "url-notifierTests-Info.plist"; sourceTree = "<group>"; };
 		750EE73918BFE48700071F54 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		750EE73B18BFE48700071F54 /* url_notifierTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = url_notifierTests.m; sourceTree = "<group>"; };
+		750EE74518BFE53A00071F54 /* MainViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MainViewController.h; sourceTree = "<group>"; };
+		750EE74618BFE53A00071F54 /* MainViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MainViewController.m; sourceTree = "<group>"; };
+		750EE74718BFE53A00071F54 /* MainViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MainViewController.xib; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -111,6 +116,9 @@
 				750EE72618BFE48700071F54 /* AppDelegate.m */,
 				750EE72818BFE48700071F54 /* Images.xcassets */,
 				750EE71D18BFE48700071F54 /* Supporting Files */,
+				750EE74518BFE53A00071F54 /* MainViewController.h */,
+				750EE74618BFE53A00071F54 /* MainViewController.m */,
+				750EE74718BFE53A00071F54 /* MainViewController.xib */,
 			);
 			path = "url-notifier";
 			sourceTree = "<group>";
@@ -191,6 +199,9 @@
 				LastUpgradeCheck = 0500;
 				ORGANIZATIONNAME = "Anton Furin";
 				TargetAttributes = {
+					750EE71218BFE48700071F54 = {
+						DevelopmentTeam = YLHBNR4ACZ;
+					};
 					750EE72D18BFE48700071F54 = {
 						TestTargetID = 750EE71218BFE48700071F54;
 					};
@@ -220,6 +231,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				750EE72118BFE48700071F54 /* InfoPlist.strings in Resources */,
+				750EE74918BFE53A00071F54 /* MainViewController.xib in Resources */,
 				750EE72918BFE48700071F54 /* Images.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -240,6 +252,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				750EE72718BFE48700071F54 /* AppDelegate.m in Sources */,
+				750EE74818BFE53A00071F54 /* MainViewController.m in Sources */,
 				750EE72318BFE48700071F54 /* main.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -359,6 +372,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "url-notifier/url-notifier-Prefix.pch";
 				INFOPLIST_FILE = "url-notifier/url-notifier-Info.plist";
@@ -372,6 +386,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "url-notifier/url-notifier-Prefix.pch";
 				INFOPLIST_FILE = "url-notifier/url-notifier-Info.plist";

@@ -26,13 +26,26 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    // Do any additional setup after loading the view from its nib.
+    
+    if (self.urlToOpen != nil)
+    {
+        [self openURL:self.urlToOpen];
+    }
 }
 
 - (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
+}
+
+- (void) openURL:(NSURL *)url
+{
+    NSLog(@"Hey");
+    if (![[UIApplication sharedApplication] openURL:url])
+    {
+        NSLog(@"Failed to open url: %@\n", url);
+    }
 }
 
 @end
