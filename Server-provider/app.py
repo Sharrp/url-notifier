@@ -2,6 +2,9 @@ from flask import Flask
 from flask import request
 import json
 import os
+from apns import APNs, Payload
+
+apns = APNs(use_sandbox=True, cert_file='cert.pem', key_file='key.pem')
 
 app = Flask(__name__)
 
@@ -40,8 +43,12 @@ def update_device_token():
 
 @app.route('/url/', methods=['POST'])
 def send_url_to_device():
-    udid = request.json['udid']
-    return s['udids'][udid]
+    print('Url received')
+    token_hex = 'b55a363fceae1394ad170faff4c0c53a296fa179898ed3cc0d9035852f386921'
+    payload = Payload(alert="New url received", custom={"url":"http://yandex.ru/touchsearch?text=nokia+xl"})
+    apns.gateway_server.send_notification(token_hex, payload)
+    # udid = request.json['udid']
+    return 'Url sent\n'
 
 if __name__ == "__main__":
     app.run(debug=True)
