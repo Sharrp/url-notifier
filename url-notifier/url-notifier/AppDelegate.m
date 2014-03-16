@@ -8,15 +8,13 @@
 
 #import "AppDelegate.h"
 
+#import "NSData+NSData_Conversion.h"
+
 @implementation AppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]] ;
-    
-    // Override point for customization after application launch.
-    [[UIApplication sharedApplication] registerForRemoteNotificationTypes:
-     (UIRemoteNotificationTypeBadge | UIRemoteNotificationTypeSound | UIRemoteNotificationTypeAlert)];
     
     self.mainVC = [[MainViewController alloc] initWithNibName:@"MainViewController" bundle:nil];
     NSDictionary *payload = [launchOptions objectForKey:UIApplicationLaunchOptionsRemoteNotificationKey];
@@ -29,6 +27,10 @@
     
     self.window.rootViewController = nav;
     [self.window makeKeyAndVisible];
+    
+    // Override point for customization after application launch.
+    [[UIApplication sharedApplication] registerForRemoteNotificationTypes:
+     (UIRemoteNotificationTypeSound | UIRemoteNotificationTypeAlert)];
     
     return YES;
 }
@@ -44,13 +46,49 @@
 
 - (void)application:(UIApplication*)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData*)deviceToken
 {
-	NSLog(@"My token is: %@", deviceToken);
+    NSData *lastToken = (NSData *)[[NSUserDefaults standardUserDefaults] objectForKey:@"last_token"];
+    if (!lastToken || ![deviceToken isEqualToData:lastToken])
+    {
+        NSString *did = [[[UIDevice currentDevice] identifierForVendor] UUIDString];
+        NSString *strToken = [deviceToken hexadecimalString];
+        NSString* jsonData = [NSString stringWithFormat:@"{\"did\":\"%@\", \"token\":\"%@\"}", did, strToken];
+        
+        // Send token to server
+        NSURL *requestURL = [NSURL URLWithString:@"http://188.226.174.130:5000/device/"];
+        NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:requestURL];
+        request.HTTPMethod = @"POST";
+        [request setValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
+        request.HTTPBody = [jsonData dataUsingEncoding:NSUTF8StringEncoding];
+        
+        NSOperationQueue *queue = [[NSOperationQueue alloc] init];
+        [NSURLConnection sendAsynchronousRequest:request
+                                           queue:queue
+                               completionHandler:^(NSURLResponse* response, NSData* data, NSError* error){
+                                   if ([data length] > 0 && error == nil)
+                                   {
+                                       NSString *udid = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+                                       NSLog(@"Received data: %@", udid);
+                                       [[NSUserDefaults standardUserDefaults] setObject:udid forKey:@"udid"];
+                                       [[NSUserDefaults standardUserDefaults] setObject:deviceToken forKey:@"last_token"];
+                                       [[NSUserDefaults standardUserDefaults] synchronize];
+                                       [[NSNotificationCenter defaultCenter] postNotificationName:@"udid update"
+                                                                                           object:udid];
+                                   }
+                                   else
+                                   {
+                                       NSLog(@"Error on sending token: %@", error);
+                                   }
+                               }];
+        
+    }
 }
 
 - (void)application:(UIApplication*)application didFailToRegisterForRemoteNotificationsWithError:(NSError*)error
 {
 	NSLog(@"Failed to get token, error: %@", error);
 }
+
+#pragma mark -- App state methods
 
 - (void)applicationWillResignActive:(UIApplication *)application
 {

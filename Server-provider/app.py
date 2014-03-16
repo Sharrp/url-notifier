@@ -23,13 +23,17 @@ def save_settings(s):
 
 s = read_settings() # settings
 
+@app.route('/', methods=['GET'])
+def default_response():
+    return 'Just works'
+
 @app.route('/device/', methods=['POST'])
 def update_device_token():
     global s
     did = request.json['did'] # device id, received from phone
     token = request.json['token'] # APNS token
     udid = -1 # user-friendly device id
-    # 2 dictionaries: udid –> token (where to send), did –> udid (is it in base)
+    # 2 dictionaries: udid -> token (where to send), did -> udid (is it in base)
     if did in s['dids']:
         udid = s['dids'][did]
         s['udids'][udid] = token
@@ -43,11 +47,19 @@ def update_device_token():
 
 @app.route('/url/', methods=['POST'])
 def send_url_to_device():
-    print('Url received')
-    token_hex = 'b55a363fceae1394ad170faff4c0c53a296fa179898ed3cc0d9035852f386921'
-    payload = Payload(alert="New url received", custom={"url":"http://yandex.ru/touchsearch?text=nokia+xl"})
-    apns.gateway_server.send_notification(token_hex, payload)
-    # udid = request.json['udid']
+    url = request.json['url']
+    udid = request.json['udid']
+    print(udid)
+    print(url)
+    udids = s['udids']
+    token = ''
+    if udid in udids:
+        token = udids[udid]
+    else:
+        return 'There is no such device'
+
+    payload = Payload(alert="New url to open", custom={"url":url})
+    apns.gateway_server.send_notification(token, payload)
     return 'Url sent\n'
 
 if __name__ == "__main__":

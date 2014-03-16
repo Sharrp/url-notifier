@@ -11,6 +11,9 @@
 @interface MainViewController : UIViewController
 
 @property (strong, nonatomic) NSURL *urlToOpen;
+@property (strong, nonatomic) NSString *udid;
+
+@property (nonatomic, strong) IBOutlet UILabel* statusLabel;
 
 - (void) openURL:(NSURL *)url;
 

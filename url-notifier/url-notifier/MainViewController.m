@@ -27,9 +27,27 @@
 {
     [super viewDidLoad];
     
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(udidUpdated)
+                                                 name:@"udid update" object:nil];
+    [self udidUpdated];
+    
     if (self.urlToOpen != nil)
     {
         [self openURL:self.urlToOpen];
+    }
+}
+
+- (void) udidUpdated
+{
+    NSString *new_udid = (NSString *)[[NSUserDefaults standardUserDefaults] objectForKey:@"udid"];
+    if (new_udid)
+    {
+        self.udid = new_udid;
+        self.statusLabel.text = [NSString stringWithFormat:@"Your udid is: %@", self.udid];
+    }
+    else
+    {
+        self.statusLabel.text = @"Udid not received yet";
     }
 }
 
@@ -41,7 +59,6 @@
 
 - (void) openURL:(NSURL *)url
 {
-    NSLog(@"Hey");
     if (![[UIApplication sharedApplication] openURL:url])
     {
         NSLog(@"Failed to open url: %@\n", url);

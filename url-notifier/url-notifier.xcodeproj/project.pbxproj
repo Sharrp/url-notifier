@@ -21,6 +21,7 @@
 		750EE73C18BFE48700071F54 /* url_notifierTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 750EE73B18BFE48700071F54 /* url_notifierTests.m */; };
 		750EE74818BFE53A00071F54 /* MainViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 750EE74618BFE53A00071F54 /* MainViewController.m */; };
 		750EE74918BFE53A00071F54 /* MainViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 750EE74718BFE53A00071F54 /* MainViewController.xib */; };
+		754F134718D5FA06007B3E9E /* NSData+NSData_Conversion.m in Sources */ = {isa = PBXBuildFile; fileRef = 754F134618D5FA06007B3E9E /* NSData+NSData_Conversion.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -53,6 +54,8 @@
 		750EE74518BFE53A00071F54 /* MainViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MainViewController.h; sourceTree = "<group>"; };
 		750EE74618BFE53A00071F54 /* MainViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MainViewController.m; sourceTree = "<group>"; };
 		750EE74718BFE53A00071F54 /* MainViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MainViewController.xib; sourceTree = "<group>"; };
+		754F134518D5FA06007B3E9E /* NSData+NSData_Conversion.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSData+NSData_Conversion.h"; path = "Lib/NSData+NSData_Conversion.h"; sourceTree = "<group>"; };
+		754F134618D5FA06007B3E9E /* NSData+NSData_Conversion.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSData+NSData_Conversion.m"; path = "Lib/NSData+NSData_Conversion.m"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -119,6 +122,7 @@
 				750EE74518BFE53A00071F54 /* MainViewController.h */,
 				750EE74618BFE53A00071F54 /* MainViewController.m */,
 				750EE74718BFE53A00071F54 /* MainViewController.xib */,
+				754F134418D5F9E8007B3E9E /* Lib */,
 			);
 			path = "url-notifier";
 			sourceTree = "<group>";
@@ -150,6 +154,15 @@
 				750EE73818BFE48700071F54 /* InfoPlist.strings */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		754F134418D5F9E8007B3E9E /* Lib */ = {
+			isa = PBXGroup;
+			children = (
+				754F134518D5FA06007B3E9E /* NSData+NSData_Conversion.h */,
+				754F134618D5FA06007B3E9E /* NSData+NSData_Conversion.m */,
+			);
+			name = Lib;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -254,6 +267,7 @@
 				750EE72718BFE48700071F54 /* AppDelegate.m in Sources */,
 				750EE74818BFE53A00071F54 /* MainViewController.m in Sources */,
 				750EE72318BFE48700071F54 /* main.m in Sources */,
+				754F134718D5FA06007B3E9E /* NSData+NSData_Conversion.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -456,6 +470,7 @@
 				750EE74118BFE48700071F54 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		750EE74218BFE48700071F54 /* Build configuration list for PBXNativeTarget "url-notifierTests" */ = {
 			isa = XCConfigurationList;
@@ -464,6 +479,7 @@
 				750EE74418BFE48700071F54 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
