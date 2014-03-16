@@ -1,0 +1,23 @@
+iOS App:
+– Tab view: general and history
+– History:
+    – show opened urls in new to old order
+    – seprate them by dates (today, yesterday, this week, this month, long time ago)
+    – tap on the url opens url again
+– General:
+    – short instruction on how to use app
+    – show udid
+– Add verification that full url received (compare url's length with received length)
+– Get urls that not fit into notification's payload from the server
+
+Server:
+– Add url length to response for ios-client checking
+– Generate more secure udids (but comfortable for human use)
+– Store urls for 5 minutes to be able to resend them directly to client on demand (in case when entire url did not fit into payload)
+– Refactor a little bit (e.g. s['udids'] should be s['tokens'])
+
+Alfred Workflow:
+– Add device
+– Remove device
+– Send link to all
+– Send link to specific one
