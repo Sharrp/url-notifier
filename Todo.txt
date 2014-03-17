@@ -7,14 +7,14 @@ iOS App:
 – General:
     – short instruction on how to use app
     – show udid
-– Add verification that full url received (compare url's length with received length)
-– Get urls that not fit into notification's payload from the server
 
 Server:
 – Add url length to response for ios-client checking
 – Generate more secure udids (but comfortable for human use)
-– Store urls for 5 minutes to be able to resend them directly to client on demand (in case when entire url did not fit into payload)
+– Store last url for every device to be able to resend them directly to client on demand (in case when entire url did not fit into payload)
+– Implement get_last_url
 – Refactor a little bit (e.g. s['udids'] should be s['tokens'])
+– Create settings.json from default copy when no settings yet
 
 Alfred Workflow:
 – Add device

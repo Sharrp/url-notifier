@@ -16,5 +16,6 @@
 @property (nonatomic, strong) IBOutlet UILabel* statusLabel;
 
 - (void) openURL:(NSURL *)url;
+- (void) requestLastUrl;
 
 @end

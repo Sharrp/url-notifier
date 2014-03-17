@@ -57,10 +57,16 @@ def send_url_to_device():
         token = udids[udid]
     else:
         return 'There is no such device'
-
-    payload = Payload(alert="New url to open", custom={"url":url})
+    url_data = {"url":url, "len":len(url)} # url length for checking data consistency on client
+    payload = Payload(alert="New url", custom=url_data)
     apns.gateway_server.send_notification(token, payload)
     return 'Url sent\n'
+
+@app.route('/lasturl/', methods=['POST'])
+def get_last_url():
+    did = request.json['did'] # device id, received from phone
+    print(did)
+    return '{"url":"http://ya.ru"}'
 
 if __name__ == "__main__":
     app.run(debug=True)

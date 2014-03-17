@@ -38,16 +38,23 @@
 - (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo
 {
     NSLog(@"User info: %@", userInfo);
-    if (userInfo != nil && userInfo[@"url"] != nil)
+    NSNumber *len = userInfo[@"len"];
+    NSString *url = userInfo[@"url"];
+    if (userInfo && url && len && [len integerValue] == [url length])
     {
         [self.mainVC openURL:[NSURL URLWithString:userInfo[@"url"]]];
+    }
+    else
+    {
+        [self.mainVC requestLastUrl];
     }
 }
 
 - (void)application:(UIApplication*)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData*)deviceToken
 {
-    NSData *lastToken = (NSData *)[[NSUserDefaults standardUserDefaults] objectForKey:@"last_token"];
-    if (!lastToken || ![deviceToken isEqualToData:lastToken])
+//    NSData *lastToken = (NSData *)[[NSUserDefaults standardUserDefaults] objectForKey:@"last_token"];
+//    if (!lastToken || ![deviceToken isEqualToData:lastToken])
+    if (YES)
     {
         NSString *did = [[[UIDevice currentDevice] identifierForVendor] UUIDString];
         NSString *strToken = [deviceToken hexadecimalString];
@@ -79,7 +86,6 @@
                                        NSLog(@"Error on sending token: %@", error);
                                    }
                                }];
-        
     }
 }
 
