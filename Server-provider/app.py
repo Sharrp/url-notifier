@@ -32,16 +32,18 @@ def update_device_token():
     global s
     did = request.json['did'] # device id, received from phone
     token = request.json['token'] # APNS token
+    print(did)
+    print(token)
     udid = -1 # user-friendly device id
     # 2 dictionaries: udid -> token (where to send), did -> udid (is it in base)
-    if did in s['dids']:
-        udid = s['dids'][did]
-        s['udids'][udid] = token
+    if did in s['did2udid']:
+        udid = s['did2udid'][did]
+        s['udid2token'][udid] = token
     else:
         udid = str(s['last_id'])
         s['last_id'] += 1
-        s['dids'][did] = udid
-        s['udids'][udid] = token
+        s['did2udid'][did] = udid
+        s['udid2token'][udid] = token
     save_settings(s)
     return str(udid)
 
@@ -51,10 +53,10 @@ def send_url_to_device():
     udid = request.json['udid']
     print(udid)
     print(url)
-    udids = s['udids']
     token = ''
-    if udid in udids:
-        token = udids[udid]
+    if udid in s['udid2token']:
+        token = s['udid2token'][udid]
+        s['urls'][udid] = url
     else:
         return 'There is no such device'
     url_data = {"url":url, "len":len(url)} # url length for checking data consistency on client
@@ -65,8 +67,15 @@ def send_url_to_device():
 @app.route('/lasturl/', methods=['POST'])
 def get_last_url():
     did = request.json['did'] # device id, received from phone
-    print(did)
-    return '{"url":"http://ya.ru"}'
+    if did in s['did2udid']:
+        udid = s['did2udid'][did]
+        url = s['urls'][udid]
+        if url:
+            return '{"url":"' + url + '"}'
+        else:
+            return '{"error":"No url for this device"}'
+    else:
+        return '{"error":"Unknown device"}'
 
 if __name__ == "__main__":
     app.run(debug=True)

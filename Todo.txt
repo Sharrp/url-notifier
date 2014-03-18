@@ -9,10 +9,7 @@ iOS App:
     – show udid
 
 Server:
-– Add url length to response for ios-client checking
 – Generate more secure udids (but comfortable for human use)
-– Store last url for every device to be able to resend them directly to client on demand (in case when entire url did not fit into payload)
-– Implement get_last_url
 – Refactor a little bit (e.g. s['udids'] should be s['tokens'])
 – Create settings.json from default copy when no settings yet
 
