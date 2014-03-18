@@ -10,7 +10,6 @@ iOS App:
 
 Server:
 – Generate more secure udids (but comfortable for human use)
-– Refactor a little bit (e.g. s['udids'] should be s['tokens'])
 – Create settings.json from default copy when no settings yet
 
 Alfred Workflow:
