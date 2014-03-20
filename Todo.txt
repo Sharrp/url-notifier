@@ -1,6 +1,6 @@
 iOS App:
 – General:
-    – short instruction on how to use app
+    – short instruction on how to use the app
     – show udid
 
 Server:
@@ -8,9 +8,10 @@ Server:
 
 Alfred Workflow:
 – Add device
-– Remove device
-– Send link to all
+– Remove device (suggest devices to remove)
+– Send link to all (to specific if there is one only)
 – Send link to specific one
+– Show "Help" on last position (while not url) (open github readme)
 
 
 -- Later --
