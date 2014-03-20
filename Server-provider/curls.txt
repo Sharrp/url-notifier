@@ -1,15 +1,5 @@
-curl -X POST -H "Content-Type: application/json" -d '{"did":"3908234837","token":"some_token"}' http://5hrp.pythonanywhere.com/device/
-
-curl -X POST -H "Content-Type: application/json" -d '{"did":"3908234837","token":"some_token"}' http://localhost:5000/device/
-
 curl -X POST -H "Content-Type: application/json" -d '{"did":"3836","token":"this_is_token"}' http://localhost:5000/device/
+curl -X POST -H "Content-Type: application/json" -d '{"udid":"1", "url":"http://ya.ru"}' http://localhost:5000/url/
+curl -X POST -H "Content-Type: application/json" -d '{"did":"6F49A549-85AA-4492-BEEF-0AB6BBD0102C"}' http://localhost:5000/lasturl/
 
-curl -X POST -H "Content-Type: application/json" -d '{"udid":"2", "url":"http://ya.ru"}' http://localhost:5000/url/
-curl -X POST -H "Content-Type: application/json" -d '{"udid":"4", "url":"http://ya.ru"}' http://188.226.174.130:5000/url/
-
-apt-get install python3-tools
-apt-get install python3-setuptools
-apt-get install python-software-properties
-add-apt-repository ppa:fkrull/deadsnakes
-apt-get update
-apt-get install python3.3
+curl -X POST -H "Content-Type: application/json" -d '{"udid":"1", "url":"http://yahoo.ru"}' http://188.226.174.130:5000/url/

@@ -3,6 +3,7 @@ from flask import request
 import json
 import os
 from apns import APNs, Payload
+import random
 
 apns = APNs(use_sandbox=True, cert_file='cert.pem', key_file='key.pem')
 
@@ -20,6 +21,17 @@ def save_settings(s):
     f = open('./settings.json', 'w+')
     f.write(json.dumps(s))
     f.close()
+
+# Short id. Not so long (since it's for humans) and not just a serial number
+def human_hash(uid):
+    uid_hash = ''
+    symbols = [str(chr(i+65)) for i in range(26)] # uppercase laters
+    symbols.extend([str(chr(i+97)) for i in range(26)]) # lowercase
+    symbols.extend([str(i) for i in range(10)]) # digits
+    for i in range(4): # 62 ^ 4 = 14 776 336, that's enough
+        uid_hash += symbols[random.randint(0, 61)]
+    return uid_hash + str(uid)
+
 
 s = read_settings() # settings
 
@@ -40,7 +52,7 @@ def update_device_token():
         udid = s['did2udid'][did]
         s['udid2token'][udid] = token
     else:
-        udid = str(s['last_id'])
+        udid = human_hash(s['last_id'])
         s['last_id'] += 1
         s['did2udid'][did] = udid
         s['udid2token'][udid] = token

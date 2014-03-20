@@ -1,15 +1,9 @@
 iOS App:
-– Tab view: general and history
-– History:
-    – show opened urls in new to old order
-    – seprate them by dates (today, yesterday, this week, this month, long time ago)
-    – tap on the url opens url again
 – General:
     – short instruction on how to use app
     – show udid
 
 Server:
-– Generate more secure udids (but comfortable for human use)
 – Create settings.json from default copy when no settings yet
 
 Alfred Workflow:
@@ -17,3 +11,17 @@ Alfred Workflow:
 – Remove device
 – Send link to all
 – Send link to specific one
+
+
+-- Later --
+iOS App:
+– Tab view: general and history
+– History:
+    – show opened urls in new to old order
+    – seprate them by dates (today, yesterday, this week, this month, long time ago)
+    – tap on the url opens url again
+
+Unit tests:
+– iOS
+– Server
+– Workflow
