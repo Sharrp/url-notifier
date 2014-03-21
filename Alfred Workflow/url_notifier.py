@@ -7,6 +7,8 @@ import os.path
 from xml.etree import ElementTree as ET
 import re
 
+devices_path = './devices'
+
 def is_valid_url(url):
     if url is None:
         return False
@@ -22,41 +24,7 @@ def is_valid_url(url):
         return True
     return False
 
-def process_command(query):
-    if not is_valid_url(query):
-        dic = {
-            'uid': '1',
-            # 'arg': '',
-            'title': 'Not an url',
-            'subtitle': 'Please don\'t do this'
-        }
-        print(generate_xml([dic]))
-        return
-    command = 'send'
-    url = 'http://ya.ru'
-    dic = {
-        'uid': '1',
-        'arg': '{"command":"' + command + '","url":"' + url + '"}',
-        'title': 'Push to all devices',
-        'param': 'pampam'
-    }
-    print(generate_xml([dic]))
-
-def execute(command):
-    data = json.loads(command)
-    print(data['url'])
-
-def get_people(query):
-    query = query.replace('й', 'й').replace('ё', 'ё')
-    uri = 'http://search.yandex-team.ru/suggest?s%5B%5D=people&s%5B%5D=text&text=' + urllib2.quote(query)
-    people = []
-    data = json.loads(urllib2.urlopen(uri).read().decode('utf-8'))
-
-    for human in data['people']:
-        people.append(parse_item(human))
-
-    print(generate_xml(people))
-
+# Convert list of items to alfred-understandable xml
 def generate_xml(items):
     xml_items = ET.Element('items')
     for item in items:
@@ -69,21 +37,95 @@ def generate_xml(items):
                 child.text = item[key]
     return ET.tostring(xml_items)
 
-def parse_item(item):
-    subtitle = item['login'] + '@'
-    if item['phone']:
-        subtitle = subtitle + u' — ' + item['phone']
-    subtitle = subtitle + u' — ' + item['department']
-
-    # substitute non-existing avatars
-    ava_path = './avatars/' + item['login'] + '.jpg'
-    if not os.path.isfile(ava_path):
-        ava_path = './avatars/__default__.png'
-
-    return {
-        'uid': item['login'],
-        'arg': item['login'],
-        'title': item['title'],
-        'subtitle': subtitle,
-        'icon': ava_path,
+# Compact way to create items for alfred's list
+def make_item(uid, arg, title, subtitle=''):
+    dic = {
+        'uid': uid,
+        'arg': arg,
+        'title': title,
+        'subtitle': subtitle
+        # 'icon': path_to_icon
     }
+    return dic
+
+# Shortcut for help item
+def help_item(title='Help'):
+    command = 'openurl'
+    url = 'https://github.com/Sharrp/url-notifier/blob/master/Alfred%20Workflow/README'
+    arg = '{"command":"' + command + '","url":"' + url + '"}'
+    return make_item('10', arg, title, 'Read help on this workflow on github.com')
+
+# Get all registered devices
+def get_devices():
+    if not os.path.isfile(devices_path):
+        return []
+    f = open(devices_path, 'r')
+    devices = json.loads(f.read())
+    f.close()
+    return devices
+
+# Dump devices to file. Will rewrite existing file
+def write_devices(devices):
+    f = open(devices_path, 'w+')
+    f.write(json.dumps(devices))
+    f.close()
+
+# First part of workflow. Parsing command and validating parameters
+def process(query):
+    items = [] # items to show in alfred's list
+    parts = query.split(' ') # it should be like these: {url}, rm {device}, add {device}
+
+    if len(parts) == 1: # trying to send url (or empty command)
+        if not is_valid_url(query):
+            items.append(help_item('Not an url'))
+        else: # Send command
+            arg = '{"command":"send","url":"' + query + '"}'
+            items.append(make_item('1', arg, 'Push to all', 'Send url to all registered devices'))
+    elif len(parts) == 2: # add or remove commands
+        if parts[0] == 'add':
+            if len(parts[1]) > 4: # the shortest udid is 5 chars long
+                devices = get_devices()
+                if parts[1] in devices: # device already added
+                    items.append(help_item('Device already added'))
+                else:
+                    arg = '{"command":"add","udid":"' + parts[1] + '"}'
+                    items.append(make_item('1', arg, 'Add this device'))
+            else:
+                items.append(help_item('Not a valid device id'))
+        elif parts[0] == 'rm':
+            devices = get_devices()
+            num = 1
+            for d in devices: # filter existing devices
+                if parts[1] in d:
+                    arg = '{"command":"remove","udid":"' + d + '"}'
+                    items.append(make_item(str(num), arg, 'Remove '+ d + ' device'))
+                    num += 1
+            if len(items) == 0:
+                items.append(help_item('No devices with "' + parts[1] + '" in id'))
+        else:
+            items.append(help_item('Unknown command'))
+    else:
+        items.append(help_item('Too much parameters'))
+
+    print(generate_xml(items))
+
+# Second part of workflow. Executing received command and showing feedback
+def execute(command):
+    data = json.loads(command)
+    if data['command'] == 'send':
+        # data = json.loads(urllib2.urlopen(uri).read().decode('utf-8'))
+        pass
+    elif data['command'] == 'add':
+        devices = get_devices()
+        devices.append(data['udid'])
+        write_devices(devices)
+        print('Device ' + data['udid'] + ' added')
+    elif data['command'] == 'remove':
+        devices = get_devices()
+        devices.remove(data['udid'])
+        write_devices(devices)
+        print('Device ' + data['udid'] + ' removed')
+    elif data['command'] == 'openurl':
+        pass
+
+    # print(data['url'])

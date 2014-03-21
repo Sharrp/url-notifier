@@ -4,11 +4,14 @@ iOS App:
     – show udid
 
 Server:
+– Udid validation for add method in workflow
+– send_url_to_device should receive array of udids (and push to all of them)
 – Create settings.json from default copy when no settings yet
 
 Alfred Workflow:
-– Add device
+– Add device. Validation for udid
 – Remove device (suggest devices to remove)
+– Implement openurl in execute()
 – Send link to all (to specific if there is one only)
 – Send link to specific one
 – Show "Help" on last position (while not url) (open github readme)
@@ -21,6 +24,10 @@ iOS App:
     – show opened urls in new to old order
     – seprate them by dates (today, yesterday, this week, this month, long time ago)
     – tap on the url opens url again
+– Add iPad support
+
+Server:
+– Minor: shit with russian symbols (again)
 
 Unit tests:
 – iOS
