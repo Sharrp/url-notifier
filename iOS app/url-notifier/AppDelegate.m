@@ -52,9 +52,8 @@
 
 - (void)application:(UIApplication*)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData*)deviceToken
 {
-//    NSData *lastToken = (NSData *)[[NSUserDefaults standardUserDefaults] objectForKey:@"last_token"];
-//    if (!lastToken || ![deviceToken isEqualToData:lastToken])
-    if (YES)
+    NSData *lastToken = (NSData *)[[NSUserDefaults standardUserDefaults] objectForKey:@"last_token"];
+    if (!lastToken || ![deviceToken isEqualToData:lastToken])
     {
         NSString *did = [[[UIDevice currentDevice] identifierForVendor] UUIDString];
         NSString *strToken = [deviceToken hexadecimalString];

@@ -62,18 +62,21 @@ def update_device_token():
 @app.route('/url/', methods=['POST'])
 def send_url_to_device():
     url = request.json['url']
-    udid = request.json['udid']
-    print(udid)
+    udids = request.json['udids']
+    print(udids)
     print(url)
-    token = ''
-    if udid in s['udid2token']:
-        token = s['udid2token'][udid]
-        s['urls'][udid] = url
-    else:
-        return 'There is no such device'
-    url_data = {"url":url, "len":len(url)} # url length for checking data consistency on client
-    payload = Payload(alert="New url", custom=url_data)
-    apns.gateway_server.send_notification(token, payload)
+    for udid in udids:
+        print(udid)
+        token = ''
+        if udid in s['udid2token']:
+            token = s['udid2token'][udid]
+            s['urls'][udid] = url
+        else:
+            return 'There is no such device'
+        url_data = {"url":url, "len":len(url)} # url length for checking data consistency on client
+        payload = Payload(alert="New url", custom=url_data)
+        print('here')
+        apns.gateway_server.send_notification(token, payload)
     return 'Url sent\n'
 
 @app.route('/lasturl/', methods=['POST'])

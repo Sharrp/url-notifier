@@ -30,7 +30,6 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(udidUpdated)
                                                  name:@"udid update" object:nil];
     [self udidUpdated];
-    [self requestLastUrl];
     
     if (self.urlToOpen != nil)
     {

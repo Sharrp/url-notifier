@@ -6,11 +6,14 @@ iOS App:
 Server:
 – Udid validation for add method in workflow
 – send_url_to_device should receive array of udids (and push to all of them)
+– send_url_to_device respond with status on every device
 – Create settings.json from default copy when no settings yet
 
 Alfred Workflow:
 – Send link to all (to specific if there is one only)
 – Send link to specific one
+– Add names to devices
+– Suggest devices on sending link
 – Add device. Udid validation on server
 
 
