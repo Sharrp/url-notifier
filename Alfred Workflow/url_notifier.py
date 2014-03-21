@@ -126,6 +126,6 @@ def execute(command):
         write_devices(devices)
         print('Device ' + data['udid'] + ' removed')
     elif data['command'] == 'openurl':
-        pass
-
-    # print(data['url'])
+        import webbrowser
+        new = 2 # open in a new tab, if possible
+        webbrowser.open(data['url'],new=new)

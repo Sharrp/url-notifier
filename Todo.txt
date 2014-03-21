@@ -9,12 +9,9 @@ Server:
 – Create settings.json from default copy when no settings yet
 
 Alfred Workflow:
-– Add device. Validation for udid
-– Remove device (suggest devices to remove)
-– Implement openurl in execute()
 – Send link to all (to specific if there is one only)
 – Send link to specific one
-– Show "Help" on last position (while not url) (open github readme)
+– Add device. Udid validation on server
 
 
 -- Later --
@@ -26,7 +23,7 @@ iOS App:
     – tap on the url opens url again
 – Add iPad support
 
-Server:
+Alfred Workflow:
 – Minor: shit with russian symbols (again)
 
 Unit tests:

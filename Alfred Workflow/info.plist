@@ -63,39 +63,10 @@ execute("{query}")</string>
 		<dict>
 			<key>config</key>
 			<dict>
-				<key>argumenttype</key>
-				<integer>0</integer>
-				<key>escaping</key>
-				<integer>126</integer>
-				<key>keyword</key>
-				<string>pu</string>
-				<key>runningsubtext</key>
-				<string>pushing...</string>
-				<key>script</key>
-				<string>from url_notifier import process_command
-
-process_command("{query}")</string>
-				<key>title</key>
-				<string>Push url to device</string>
-				<key>type</key>
-				<integer>3</integer>
-				<key>withspace</key>
-				<true/>
-			</dict>
-			<key>type</key>
-			<string>alfred.workflow.input.scriptfilter</string>
-			<key>uid</key>
-			<string>99FC8F19-2D27-47AE-AE45-D02EBF2A0B24</string>
-			<key>version</key>
-			<integer>0</integer>
-		</dict>
-		<dict>
-			<key>config</key>
-			<dict>
 				<key>lastpathcomponent</key>
 				<false/>
 				<key>onlyshowifquerypopulated</key>
-				<false/>
+				<true/>
 				<key>output</key>
 				<integer>0</integer>
 				<key>removeextension</key>
@@ -111,6 +82,35 @@ process_command("{query}")</string>
 			<string>alfred.workflow.output.notification</string>
 			<key>uid</key>
 			<string>0E576D13-4543-4CC3-9E67-7BB70C768BF4</string>
+			<key>version</key>
+			<integer>0</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>argumenttype</key>
+				<integer>0</integer>
+				<key>escaping</key>
+				<integer>126</integer>
+				<key>keyword</key>
+				<string>pu</string>
+				<key>runningsubtext</key>
+				<string>pushing...</string>
+				<key>script</key>
+				<string>from url_notifier import process
+
+process("{query}")</string>
+				<key>title</key>
+				<string>Push url to device</string>
+				<key>type</key>
+				<integer>3</integer>
+				<key>withspace</key>
+				<true/>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.input.scriptfilter</string>
+			<key>uid</key>
+			<string>99FC8F19-2D27-47AE-AE45-D02EBF2A0B24</string>
 			<key>version</key>
 			<integer>0</integer>
 		</dict>
@@ -132,7 +132,7 @@ process_command("{query}")</string>
 		<key>A15E9C32-7E38-40CB-BD57-DD8CBAC732E6</key>
 		<dict>
 			<key>ypos</key>
-			<real>10</real>
+			<real>110</real>
 		</dict>
 	</dict>
 	<key>webaddress</key>
