@@ -91,7 +91,7 @@ def get_last_url():
     else:
         return '{"error":"Unknown device"}'
 
-@app.route('/client/', methods=['GET'])
+@app.route('/client/', methods=['POST'])
 def check_client():
     udid = request.json['udid']
     if udid in s['udid2token']:

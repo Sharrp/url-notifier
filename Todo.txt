@@ -15,7 +15,6 @@ Alfred Workflow:
 – Send link to specific one
 – Add names to devices
 – Suggest devices on sending link
-– Add device. Udid validation on server
 
 
 -- Later --
