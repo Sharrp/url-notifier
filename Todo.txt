@@ -1,12 +1,13 @@
 iOS App:
+– Too long launch
 – General:
     – short instruction on how to use the app
     – show udid
 
 Server:
-– Udid validation for add method in workflow
 – send_url_to_device should receive array of udids (and push to all of them)
 – send_url_to_device respond with status on every device
+– add http:// to sended url
 – Create settings.json from default copy when no settings yet
 
 Alfred Workflow:

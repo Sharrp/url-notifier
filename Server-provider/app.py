@@ -66,7 +66,6 @@ def send_url_to_device():
     print(udids)
     print(url)
     for udid in udids:
-        print(udid)
         token = ''
         if udid in s['udid2token']:
             token = s['udid2token'][udid]
@@ -91,6 +90,14 @@ def get_last_url():
             return '{"error":"No url for this device"}'
     else:
         return '{"error":"Unknown device"}'
+
+@app.route('/client/', methods=['GET'])
+def check_client():
+    udid = request.json['udid']
+    if udid in s['udid2token']:
+        return '{"client_exists":true}'
+    else:
+        return '{"client_exists":false}'
 
 if __name__ == "__main__":
     app.run(debug=True)
