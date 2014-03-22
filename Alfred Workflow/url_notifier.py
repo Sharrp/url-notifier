@@ -13,7 +13,7 @@ def is_valid_url(url):
     if url is None:
         return False
     regex = re.compile(
-        r'(^https?://)?'  # http:// or https://
+        r'(^https?://)?'  # http:// or https:// or none
         r'(?:(?:[A-Z0-9-_](?:[A-Z0-9-_]{0,61}[A-Z0-9-_])?\.)+[A-Z]{2,6}\.?|'  # domain...
         r'localhost|'  # localhost...
         r'\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})' # ...or ip
@@ -79,9 +79,21 @@ def process(query):
         if not is_valid_url(query):
             items.append(help_item('Not an url'))
         else: # Send command
-            arg = '{"command":"send","url":"' + query + '"}'
-            items.append(make_item('1', arg, 'Push to all', 'Send url to all registered devices'))
-    elif len(parts) == 2: # add or remove commands
+            devices = get_devices()
+            if len(devices) == 0: # no devices added yet
+                items.append(help_item('You didn\'t add devices'))
+            else:
+                # send to all
+                json_devices = json.dumps(devices)
+                arg = '{"command":"send","url":"' + query + '","udids":' + json_devices + '}'
+                items.append(make_item('1', arg, 'Push to all', 'Send url to all registered devices'))
+                # send to specific
+                num = 2
+                for d in devices:
+                    arg = '{"command":"send","url":"' + query + '","udids":["' + d + '"]}'
+                    items.append(make_item(str(num), arg, 'Send to '+ d))
+                    num += 1
+    elif len(parts) == 2: # add / remove commands
         if parts[0] == 'add':
             if len(parts[1]) > 4: # the shortest udid is 5 chars long
                 devices = get_devices()
@@ -113,13 +125,27 @@ def process(query):
 def execute(command):
     data = json.loads(command)
     if data['command'] == 'send':
-        # data = json.loads(urllib2.urlopen(uri).read().decode('utf-8'))
-        pass
+        del(data['command'])
+        url = 'http://188.226.174.130:5000/url/'
+        req = urllib2.Request(url=url, data=json.dumps(data))
+        req.add_header('Content-Type', 'application/json')
+        urllib2.urlopen(req)
+        # print(r.read())
     elif data['command'] == 'add':
-        devices = get_devices()
-        devices.append(data['udid'])
-        write_devices(devices)
-        print('Device ' + data['udid'] + ' added')
+        # Checking that udid exists
+        url = 'http://188.226.174.130:5000/client/'
+        del(data['command'])
+        req = urllib2.Request(url=url, data=json.dumps(data))
+        req.add_header('Content-Type', 'application/json')
+        r = urllib2.urlopen(req)
+        response = json.loads(r.read())
+        if 'client_exists' in response and not response['client_exists']:
+            print('No registered device with id "' + data['udid'] + '"')
+        else:
+            devices = get_devices()
+            devices.append(data['udid'])
+            write_devices(devices)
+            print('Device ' + data['udid'] + ' added')
     elif data['command'] == 'remove':
         devices = get_devices()
         devices.remove(data['udid'])

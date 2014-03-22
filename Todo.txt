@@ -11,10 +11,8 @@ Server:
 – Create settings.json from default copy when no settings yet
 
 Alfred Workflow:
-– Send link to all (to specific if there is one only)
-– Send link to specific one
+– Status for sended link
 – Add names to devices
-– Suggest devices on sending link
 
 
 -- Later --
