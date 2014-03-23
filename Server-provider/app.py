@@ -65,6 +65,10 @@ def send_url_to_device():
     udids = request.json['udids']
     print(udids)
     print(url)
+    # add http to url
+    url = url.strip()
+    if not url.startswith('http://') and not url.startswith('https://'):
+        url = 'http://' + url
     for udid in udids:
         token = ''
         if udid in s['udid2token']:

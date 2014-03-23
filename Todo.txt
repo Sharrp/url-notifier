@@ -7,12 +7,10 @@ iOS App:
 Server:
 – send_url_to_device should receive array of udids (and push to all of them)
 – send_url_to_device respond with status on every device
-– add http:// to sended url
 – Create settings.json from default copy when no settings yet
 
 Alfred Workflow:
 – Status for sended link
-– Add names to devices
 
 
 -- Later --
