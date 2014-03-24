@@ -69,18 +69,20 @@ def send_url_to_device():
     url = url.strip()
     if not url.startswith('http://') and not url.startswith('https://'):
         url = 'http://' + url
+    response = {}
     for udid in udids:
         token = ''
         if udid in s['udid2token']:
             token = s['udid2token'][udid]
             s['urls'][udid] = url
+            response[udid] = 'Ok'
         else:
-            return 'There is no such device'
+            response[udid] = 'Device not found'
+            continue
         url_data = {"url":url, "len":len(url)} # url length for checking data consistency on client
         payload = Payload(alert="New url", custom=url_data)
-        print('here')
         apns.gateway_server.send_notification(token, payload)
-    return 'Url sent\n'
+    return json.dumps(response)
 
 @app.route('/lasturl/', methods=['POST'])
 def get_last_url():

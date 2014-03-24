@@ -3,10 +3,9 @@ iOS App:
 – General:
     – short instruction on how to use the app
     – show udid
+– Icon
 
 Server:
-– send_url_to_device should receive array of udids (and push to all of them)
-– send_url_to_device respond with status on every device
 – Create settings.json from default copy when no settings yet
 
 Alfred Workflow:
