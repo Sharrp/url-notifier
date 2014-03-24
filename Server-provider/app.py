@@ -12,9 +12,12 @@ app = Flask(__name__)
 def read_settings():
     cur_dir = os.path.dirname(__file__)
     path = os.path.join(cur_dir, 'settings.json')
-    f = open(path, 'r')
-    settings = json.loads(f.read())
-    f.close()
+    if not os.path.exists(path):
+        settings = {"last_id":1,"did2udid":{},"udid2token":{},"urls":{}}
+    else:
+        f = open(path, 'r')
+        settings = json.loads(f.read())
+        f.close()
     return settings
 
 def save_settings(s):

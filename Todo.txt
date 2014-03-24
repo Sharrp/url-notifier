@@ -6,7 +6,7 @@ iOS App:
 – Icon
 
 Server:
-– Create settings.json from default copy when no settings yet
+None
 
 Alfred Workflow:
 – Status for sended link
