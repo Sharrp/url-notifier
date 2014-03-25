@@ -59,7 +59,6 @@
 - (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
 }
 
 
@@ -67,14 +66,12 @@
 
 - (void) openURL:(NSURL *)url
 {
-    NSLog(@"Open url, please");
     dispatch_async(dispatch_get_main_queue(), ^{
         if (![[UIApplication sharedApplication] openURL:url])
         {
             NSLog(@"Failed to open url: %@\n", url);
             [self updateStatus:[NSString stringWithFormat:@"Failed to open url: %@", url]];
         }
-
     });
 }
 
