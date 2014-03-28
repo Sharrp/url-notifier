@@ -36,15 +36,13 @@ def human_hash(uid):
     return uid_hash + str(uid)
 
 
-s = read_settings() # settings
-
 @app.route('/', methods=['GET'])
 def default_response():
     return 'Just works'
 
 @app.route('/device/', methods=['POST'])
 def update_device_token():
-    global s
+    s = read_settings()
     did = request.json['did'] # device id, received from phone
     token = request.json['token'] # APNS token
     print(did)
@@ -66,13 +64,14 @@ def update_device_token():
 def send_url_to_device():
     url = request.json['url']
     udids = request.json['udids']
-    print(udids)
-    print(url)
     # add http to url
     url = url.strip()
     if not url.startswith('http://') and not url.startswith('https://'):
         url = 'http://' + url
     response = {}
+    print('Url: ' + url)
+    print('Devices: ' + ', '.join(udids))
+    s = read_settings()
     for udid in udids:
         token = ''
         if udid in s['udid2token']:
@@ -85,11 +84,13 @@ def send_url_to_device():
         url_data = {"url":url, "len":len(url)} # url length for checking data consistency on client
         payload = Payload(alert="New url", custom=url_data)
         apns.gateway_server.send_notification(token, payload)
+    save_settings(s)
     return json.dumps(response)
 
 @app.route('/lasturl/', methods=['POST'])
 def get_last_url():
     did = request.json['did'] # device id, received from phone
+    s = read_settings()
     if did in s['did2udid']:
         udid = s['did2udid'][did]
         url = s['urls'][udid]
@@ -103,6 +104,8 @@ def get_last_url():
 @app.route('/client/', methods=['POST'])
 def check_client():
     udid = request.json['udid']
+    print('Client check: ' + udid)
+    s = read_settings()
     if udid in s['udid2token']:
         return '{"client_exists":true}'
     else:
