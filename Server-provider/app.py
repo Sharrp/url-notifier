@@ -1,19 +1,18 @@
-from flask import Flask
-from flask import request
 import json
 import os
-from apns import APNs, Payload
 import random
 import re
+from flask import Flask
+from flask import request
+from apns import APNs, Payload
 
 apns = APNs(use_sandbox=True, cert_file='cert.pem', key_file='key.pem')
-
 app = Flask(__name__)
 
 def read_settings():
     cur_dir = os.path.dirname(__file__)
     path = os.path.join(cur_dir, 'settings.json')
-    if not os.path.exists(path):
+    if not os.path.exists(path): # default settings
         settings = {"last_id":1,"did2udid":{},"udid2token":{},"urls":{}}
     else:
         f = open(path, 'r')
@@ -51,16 +50,17 @@ def readable_url(url):
 
 @app.route('/', methods=['GET'])
 def default_response():
-    return 'Just works'
+    return "It's ok"
 
+# Receives token from device and respond with udid
 @app.route('/device/', methods=['POST'])
 def update_device_token():
     s = read_settings()
     did = request.json['did'] # device id, received from phone
     token = request.json['token'] # APNS token
-    print(did)
-    print(token)
-    udid = -1 # user-friendly device id
+    print('Device update: ' + did)
+    print('Received token: ' + token)
+    udid = '' # user-friendly device id
     # 2 dictionaries: udid -> token (where to send), did -> udid (is it in base)
     if did in s['did2udid']:
         udid = s['did2udid'][did]
@@ -71,8 +71,9 @@ def update_device_token():
         s['did2udid'][did] = udid
         s['udid2token'][udid] = token
     save_settings(s)
-    return str(udid)
+    return udid
 
+# Pushes url to multiple devices
 @app.route('/url/', methods=['POST'])
 def send_url_to_device():
     url = request.json['url']
@@ -100,6 +101,8 @@ def send_url_to_device():
     save_settings(s)
     return json.dumps(response)
 
+# In some cases payload in push notification wouldn't be full
+# Then mobile client should ask for last sended url, when launched
 @app.route('/lasturl/', methods=['POST'])
 def get_last_url():
     did = request.json['did'] # device id, received from phone
@@ -114,6 +117,7 @@ def get_last_url():
     else:
         return '{"error":"Unknown device"}'
 
+# Checks that received mobile client exists in database
 @app.route('/client/', methods=['POST'])
 def check_client():
     udid = request.json['udid']
@@ -123,6 +127,7 @@ def check_client():
         return '{"client_exists":true}'
     else:
         return '{"client_exists":false}'
+
 
 if __name__ == "__main__":
     app.run(debug=True)
