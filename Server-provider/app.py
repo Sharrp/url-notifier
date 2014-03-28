@@ -4,6 +4,7 @@ import json
 import os
 from apns import APNs, Payload
 import random
+import re
 
 apns = APNs(use_sandbox=True, cert_file='cert.pem', key_file='key.pem')
 
@@ -34,6 +35,18 @@ def human_hash(uid):
     for i in range(4): # 62 ^ 4 = 14 776 336, that's enough
         uid_hash += symbols[random.randint(0, 61)]
     return uid_hash + str(uid)
+
+# If could - returns domain, otherwise - url or it's first 20 symbols
+def readable_url(url):
+    r = re.compile('https?://([^?/&]+)')
+    m = r.match(url)
+    if m:
+        return m.group(1)
+    else:
+        if len(url) > 20:
+            return url[:20] + '...'
+        else:
+            return url
 
 
 @app.route('/', methods=['GET'])
@@ -82,7 +95,7 @@ def send_url_to_device():
             response[udid] = 'Device not found'
             continue
         url_data = {"url":url, "len":len(url)} # url length for checking data consistency on client
-        payload = Payload(alert="New url", custom=url_data)
+        payload = Payload(alert=readable_url(url), custom=url_data)
         apns.gateway_server.send_notification(token, payload)
     save_settings(s)
     return json.dumps(response)
