@@ -8,6 +8,8 @@ from xml.etree import ElementTree as ET
 import re
 
 devices_path = './devices'
+# server = 'http://188.226.174.130:5000/'
+server = 'http://localhost:5000/'
 
 def is_valid_url(url):
     if url is None:
@@ -134,14 +136,14 @@ def execute(command):
     data = json.loads(command)
     if data['command'] == 'send':
         del(data['command'])
-        url = 'http://188.226.174.130:5000/url/'
+        url = server + 'url/'
         req = urllib2.Request(url=url, data=json.dumps(data))
         req.add_header('Content-Type', 'application/json')
         urllib2.urlopen(req)
         # print(r.read())
     elif data['command'] == 'add':
         # Checking that udid exists
-        url = 'http://188.226.174.130:5000/client/'
+        url = server + 'client/'
         params = {'udid':data['udid']}
         req = urllib2.Request(url=url, data=json.dumps(params))
         req.add_header('Content-Type', 'application/json')
