@@ -2,13 +2,14 @@ iOS App:
 – Icon
 
 Server:
-None
+– Add verification for input arguments in every method
 
 Alfred Workflow:
 – Status for sended link
 – Multiple words device names
 
--- Later --
+
+== Later ==
 iOS App:
 – Tab view: general and history
 – History:
