@@ -8,6 +8,8 @@
 
 #import "MainViewController.h"
 
+#import "NSData+NSData_Conversion.h"
+
 @interface MainViewController ()
 
 @end
@@ -17,8 +19,9 @@
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
-    if (self) {
-        // Custom initialization
+    if (self)
+    {
+        self.udid = (NSString *)[[NSUserDefaults standardUserDefaults] objectForKey:@"udid"];
     }
     return self;
 }
@@ -27,9 +30,15 @@
 {
     [super viewDidLoad];
     
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(udidUpdated)
-                                                 name:@"udid update" object:nil];
-    [self udidUpdated];
+    if (self.udid)
+    {
+        [self hideAll];
+        self.udidStatusLabel.text = @"Your device ID is";
+        self.udidLabel.text = self.udid;
+        self.udidLabel.hidden = NO;
+        self.contextHelpLabel.hidden = NO;
+        self.contextHelpLabel.text = @"Add it to your desktop client and start pushing!";
+    }
     
     if (self.urlToOpen != nil)
     {
@@ -37,38 +46,70 @@
     }
 }
 
+
+#pragma mark -- Device id management
+
 - (void) tokenUpdated
 {
-    [self updateUdid];
+    [self requestUdidOrUpdateToken];
 }
 
-- (void) updateUdid
+- (void) tokenUpdateFailed
 {
+    [self hideAll];
+    self.udidStatusLabel.text = @"That sad moment, when you have to relaunch application";
+    self.contextHelpLabel.hidden = NO;
+    self.contextHelpLabel.text = @"By the way, you should allow push notifications for this app in phone settings";
 }
 
-- (void) udidUpdated
+- (void) requestUdidOrUpdateToken
 {
-    NSString *new_udid = (NSString *)[[NSUserDefaults standardUserDefaults] objectForKey:@"udid"];
-    if (new_udid)
-    {
-        self.udid = new_udid;
-        [self updateStatus:[NSString stringWithFormat:@"Your udid is: %@", self.udid]];
-    }
-    else
-    {
-        [self updateStatus:@"Udid not received yet"];
-    }
-}
-
-- (void) updateStatus:(NSString *)text
-{
-    self.contextHelpLabel.text = text;
+    [self hideAll];
+    self.udidStatusLabel.text = @"Getting device id";
+    [self.udidActivityIndicator startAnimating];
+    
+    NSString *did = [[[UIDevice currentDevice] identifierForVendor] UUIDString];
+    NSData *deviceToken = (NSData *)[[NSUserDefaults standardUserDefaults] objectForKey:@"last_token"];
+    NSString *strToken = [deviceToken hexadecimalString];
+    NSString* jsonData = [NSString stringWithFormat:@"{\"did\":\"%@\", \"token\":\"%@\"}", did, strToken];
+    
+    // Send token to server
+    NSURL *requestURL = [NSURL URLWithString:@"http://188.226.174.130:5000/device/"];
+    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:requestURL];
+    request.HTTPMethod = @"POST";
+    [request setValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
+    request.HTTPBody = [jsonData dataUsingEncoding:NSUTF8StringEncoding];
+    
+    NSOperationQueue *queue = [[NSOperationQueue alloc] init];
+    [NSURLConnection sendAsynchronousRequest:request
+                                       queue:queue
+                           completionHandler:^(NSURLResponse* response, NSData* data, NSError* error){
+                               if ([data length] > 0 && error == nil)
+                               {
+                                   NSString *udid = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+                                   NSLog(@"Received udid: %@", udid);
+                                   self.udidStatusLabel.text = @"Your device ID is";
+                                   self.udidLabel.text = udid;
+                                   self.udidLabel.hidden = NO;
+                                   
+                                   [[NSUserDefaults standardUserDefaults] setObject:udid forKey:@"udid"];
+                                   [[NSUserDefaults standardUserDefaults] setObject:deviceToken forKey:@"last_token"];
+                                   [[NSUserDefaults standardUserDefaults] synchronize];
+                               }
+                               else
+                               {
+                                   self.udidStatusLabel.text = @"Can't get device id";
+                                   self.getIdButton.hidden = NO;
+                                   NSLog(@"Error on sending token: %@", error);
+                               }
+                               
+                               [self.udidActivityIndicator stopAnimating];
+                           }];
 }
 
 - (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
 }
 
 
@@ -76,11 +117,14 @@
 
 - (void) openURL:(NSURL *)url
 {
+    NSString *status = [NSString stringWithFormat:@"Opening %@", [url host]];
+    self.contextHelpLabel.text = status;
+    self.contextHelpLabel.hidden = NO;
     dispatch_async(dispatch_get_main_queue(), ^{
         if (![[UIApplication sharedApplication] openURL:url])
         {
             NSLog(@"Failed to open url: %@\n", url);
-            [self updateStatus:[NSString stringWithFormat:@"Failed to open url: %@", url]];
+            self.contextHelpLabel.text = [NSString stringWithFormat:@"Failed to open url: %@", url];
         }
     });
 }
@@ -137,6 +181,23 @@
 {
     NSURL *url = [NSURL URLWithString:@"https://github.com/Sharrp/url-notifier/blob/master/README.md"];
     [self openURL:url];
+}
+
+- (IBAction) tryToGetDeviceId
+{
+    [self requestUdidOrUpdateToken];
+}
+
+- (void) hideAll
+{
+    self.udidLabel.hidden = YES;
+    self.getIdButton.hidden = YES;
+    self.contextHelpLabel.hidden = YES;
+}
+
+- (void) enterForeground
+{
+    self.contextHelpLabel.hidden = YES;
 }
 
 - (UIStatusBarStyle)preferredStatusBarStyle

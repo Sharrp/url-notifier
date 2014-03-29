@@ -16,11 +16,16 @@
 @property (nonatomic, strong) IBOutlet UILabel* udidStatusLabel;
 @property (nonatomic, strong) IBOutlet UILabel* udidLabel;
 @property (nonatomic, strong) IBOutlet UIActivityIndicatorView * udidActivityIndicator;
+@property (nonatomic, strong) IBOutlet UIButton* getIdButton;
 @property (nonatomic, strong) IBOutlet UILabel* contextHelpLabel;
 
 - (void) openURL:(NSURL *)url;
 - (void) requestLastUrl;
+- (void) tokenUpdated;
+- (void) tokenUpdateFailed;
 
+- (IBAction) tryToGetDeviceId;
 - (IBAction) helpButtonTap;
+- (void) enterForeground;
 
 @end
