@@ -30,7 +30,25 @@
 {
     [super viewDidLoad];
     
-    if (self.udid)
+    [self checkPushAvailability];
+    
+    if (self.urlToOpen != nil)
+    {
+        [self openURL:self.urlToOpen];
+    }
+}
+
+- (void) checkPushAvailability
+{
+    UIRemoteNotificationType status = [[UIApplication sharedApplication] enabledRemoteNotificationTypes];
+    if (status == UIRemoteNotificationTypeNone)
+    {
+        [self hideAll];
+        self.udidStatusLabel.text = @"Push notifications is not available";
+        self.contextHelpLabel.hidden = NO;
+        self.contextHelpLabel.text = @"You should allow push notifications for this app in phone settings";
+    }
+    else if (self.udid)
     {
         [self hideAll];
         self.udidStatusLabel.text = @"Your device ID is";
@@ -38,11 +56,6 @@
         self.udidLabel.hidden = NO;
         self.contextHelpLabel.hidden = NO;
         self.contextHelpLabel.text = @"Add it to your desktop client and start pushing!";
-    }
-    
-    if (self.urlToOpen != nil)
-    {
-        [self openURL:self.urlToOpen];
     }
 }
 
@@ -58,8 +71,6 @@
 {
     [self hideAll];
     self.udidStatusLabel.text = @"That sad moment, when you have to relaunch application";
-    self.contextHelpLabel.hidden = NO;
-    self.contextHelpLabel.text = @"By the way, you should allow push notifications for this app in phone settings";
 }
 
 - (void) requestUdidOrUpdateToken
@@ -198,6 +209,7 @@
 - (void) enterForeground
 {
     self.contextHelpLabel.hidden = YES;
+    [self checkPushAvailability];
 }
 
 - (UIStatusBarStyle)preferredStatusBarStyle

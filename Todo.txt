@@ -1,8 +1,4 @@
 iOS App:
-– Too long launch
-– General:
-    – short instruction on how to use the app
-    – show udid
 – Icon
 
 Server:
