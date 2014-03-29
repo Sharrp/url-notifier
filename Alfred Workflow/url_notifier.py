@@ -52,7 +52,7 @@ def make_item(uid, arg, title, subtitle=''):
 # Shortcut for help item
 def help_item(title='Help'):
     command = 'openurl'
-    url = 'https://github.com/Sharrp/url-notifier/blob/master/Alfred%20Workflow/README'
+    url = 'https://github.com/Sharrp/url-notifier/blob/master/README.md'
     arg = '{"command":"' + command + '","url":"' + url + '"}'
     return make_item('10', arg, title, 'Read help on this workflow on github.com')
 
