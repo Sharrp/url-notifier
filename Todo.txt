@@ -6,7 +6,7 @@ None
 
 Alfred Workflow:
 – Status for sended link
-
+– Multiple words device names
 
 -- Later --
 iOS App:
