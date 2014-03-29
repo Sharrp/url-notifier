@@ -13,9 +13,14 @@
 @property (strong, nonatomic) NSURL *urlToOpen;
 @property (strong, nonatomic) NSString *udid;
 
-@property (nonatomic, strong) IBOutlet UILabel* statusLabel;
+@property (nonatomic, strong) IBOutlet UILabel* udidStatusLabel;
+@property (nonatomic, strong) IBOutlet UILabel* udidLabel;
+@property (nonatomic, strong) IBOutlet UIActivityIndicatorView * udidActivityIndicator;
+@property (nonatomic, strong) IBOutlet UILabel* contextHelpLabel;
 
 - (void) openURL:(NSURL *)url;
 - (void) requestLastUrl;
+
+- (IBAction) helpButtonTap;
 
 @end

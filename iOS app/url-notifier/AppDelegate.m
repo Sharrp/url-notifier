@@ -24,7 +24,7 @@
         self.mainVC.urlToOpen = [NSURL URLWithString:payload[@"url"]];
     }
     UINavigationController *nav = [[UINavigationController alloc]  initWithRootViewController:self.mainVC];
-    
+    nav.navigationBarHidden = YES;
     self.window.rootViewController = nav;
     [self.window makeKeyAndVisible];
     
@@ -74,7 +74,7 @@
                                    if ([data length] > 0 && error == nil)
                                    {
                                        NSString *udid = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
-                                       NSLog(@"Received data: %@", udid);
+                                       NSLog(@"Received udid: %@", udid);
                                        [[NSUserDefaults standardUserDefaults] setObject:udid forKey:@"udid"];
                                        [[NSUserDefaults standardUserDefaults] setObject:deviceToken forKey:@"last_token"];
                                        [[NSUserDefaults standardUserDefaults] synchronize];

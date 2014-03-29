@@ -37,6 +37,15 @@
     }
 }
 
+- (void) tokenUpdated
+{
+    [self updateUdid];
+}
+
+- (void) updateUdid
+{
+}
+
 - (void) udidUpdated
 {
     NSString *new_udid = (NSString *)[[NSUserDefaults standardUserDefaults] objectForKey:@"udid"];
@@ -53,7 +62,7 @@
 
 - (void) updateStatus:(NSString *)text
 {
-    self.statusLabel.text = text;
+    self.contextHelpLabel.text = text;
 }
 
 - (void)didReceiveMemoryWarning
@@ -67,14 +76,12 @@
 
 - (void) openURL:(NSURL *)url
 {
-    NSLog(@"Open url, please");
     dispatch_async(dispatch_get_main_queue(), ^{
         if (![[UIApplication sharedApplication] openURL:url])
         {
             NSLog(@"Failed to open url: %@\n", url);
             [self updateStatus:[NSString stringWithFormat:@"Failed to open url: %@", url]];
         }
-
     });
 }
 
@@ -121,6 +128,20 @@
     };
     [NSURLConnection sendAsynchronousRequest:request queue:queue
                            completionHandler:lastUrlReceived];
+}
+
+
+#pragma mark -- UI methods
+
+- (IBAction) helpButtonTap
+{
+    NSURL *url = [NSURL URLWithString:@"https://github.com/Sharrp/url-notifier/blob/master/README.md"];
+    [self openURL:url];
+}
+
+- (UIStatusBarStyle)preferredStatusBarStyle
+{
+    return UIStatusBarStyleLightContent;
 }
 
 @end
