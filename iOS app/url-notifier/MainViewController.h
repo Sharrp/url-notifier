@@ -10,7 +10,7 @@
 
 @interface MainViewController : UIViewController
 
-@property (strong, nonatomic) NSURL *urlToOpen;
+@property (strong, nonatomic) NSString *urlStringToOpen;
 @property (strong, nonatomic) NSString *udid;
 
 @property (nonatomic, strong) IBOutlet UILabel* udidStatusLabel;
@@ -19,7 +19,7 @@
 @property (nonatomic, strong) IBOutlet UIButton* getIdButton;
 @property (nonatomic, strong) IBOutlet UILabel* contextHelpLabel;
 
-- (void) openURL:(NSURL *)url;
+- (void) openURL:(NSString *)urlString;
 - (void) requestLastUrl;
 - (void) tokenUpdated;
 - (void) tokenUpdateFailed;

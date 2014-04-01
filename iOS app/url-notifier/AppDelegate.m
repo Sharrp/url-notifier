@@ -19,7 +19,7 @@
     NSLog(@"Payload: %@", payload);
     if (payload != nil && payload[@"url"] != nil)
     {
-        self.mainVC.urlToOpen = [NSURL URLWithString:payload[@"url"]];
+        self.mainVC.urlStringToOpen = payload[@"url"];
     }
     UINavigationController *nav = [[UINavigationController alloc]  initWithRootViewController:self.mainVC];
     nav.navigationBarHidden = YES;
@@ -44,7 +44,7 @@
     // Checking that we've got full url
     if (userInfo && url && len && [len integerValue] == [url length])
     {
-        [self.mainVC openURL:[NSURL URLWithString:userInfo[@"url"]]];
+        [self.mainVC openURL:userInfo[@"url"]];
     }
     else
     {
@@ -66,6 +66,7 @@
 
 - (void)application:(UIApplication*)application didFailToRegisterForRemoteNotificationsWithError:(NSError*)error
 {
+    NSLog(@"%@", error);
     [self.mainVC tokenUpdateFailed];
 }
 

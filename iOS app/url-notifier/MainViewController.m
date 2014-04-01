@@ -32,9 +32,9 @@
     
     [self checkPushAvailability];
     
-    if (self.urlToOpen != nil)
+    if (self.urlStringToOpen != nil)
     {
-        [self openURL:self.urlToOpen];
+        [self openURL:self.urlStringToOpen];
     }
 }
 
@@ -126,9 +126,26 @@
 
 #pragma mark -- Public methods 
 
-- (void) openURL:(NSURL *)url
+- (void) openURL:(NSString *)urlString
 {
-    NSString *status = [NSString stringWithFormat:@"Opening %@", [url host]];
+    // Allowed characters should not be escaped
+    NSRange lcEnglishRange;
+    lcEnglishRange.location = (unsigned int)'a';
+    lcEnglishRange.length = 26;
+    NSMutableCharacterSet *allowed = [NSCharacterSet characterSetWithRange:lcEnglishRange];
+    lcEnglishRange.location = (unsigned int)'A';
+    lcEnglishRange.length = 26;
+    [allowed addCharactersInRange:lcEnglishRange];
+    [allowed formUnionWithCharacterSet:[NSCharacterSet decimalDigitCharacterSet]];
+    [allowed addCharactersInString:@"%!*'();:@&=+$,/?#[].-"];
+
+    NSString *escapedUrl = [urlString stringByAddingPercentEncodingWithAllowedCharacters:allowed];
+    NSURL *url = [NSURL URLWithString:escapedUrl];
+//    NSLog(@"URL: %@", urlString);
+//    NSLog(@"Escaped: %@", escapedUrl);
+//    NSLog(@"NSURL: %@", url);
+    
+    NSString *status = [NSString stringWithFormat:@"Opening: %@", [url host]];
     self.contextHelpLabel.text = status;
     self.contextHelpLabel.hidden = NO;
     dispatch_async(dispatch_get_main_queue(), ^{
@@ -165,10 +182,9 @@
             }
             else
             {
-                NSURL *url = [NSURL URLWithString:dataDic[@"url"]];
-                if (url)
+                if (dataDic[@"url"])
                 {
-                    [self openURL:url];
+                    [self openURL:dataDic[@"url"]];
                 }
                 else
                 {
@@ -190,8 +206,8 @@
 
 - (IBAction) helpButtonTap
 {
-    NSURL *url = [NSURL URLWithString:@"https://github.com/Sharrp/url-notifier/blob/master/README.md"];
-    [self openURL:url];
+    NSString *urlString = @"https://github.com/Sharrp/url-notifier/blob/master/README.md";
+    [self openURL:urlString];
 }
 
 - (IBAction) tryToGetDeviceId
