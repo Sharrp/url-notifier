@@ -73,6 +73,7 @@ def write_devices(devices):
 
 # First part of workflow. Parsing command and validating parameters
 def process(query):
+    query = query.decode('utf-8')
     items = [] # items to show in alfred's list
     parts = query.split(' ') # it should be like these: {url}, rm {device}, add {device}
 
