@@ -86,18 +86,20 @@ def send_url_to_device():
     print('Url: ' + url)
     print('Devices: ' + ', '.join(udids))
     s = read_settings()
+
     for udid in udids:
         token = ''
         if udid in s['udid2token']:
             token = s['udid2token'][udid]
             s['urls'][udid] = url
-            response[udid] = 'Ok'
+            response[udid] = 200
         else:
-            response[udid] = 'Device not found'
+            response[udid] = 404
             continue
         url_data = {"url":url, "len":len(url)} # url length for checking data consistency on client
         payload = Payload(alert=readable_url(url), custom=url_data)
         apns.gateway_server.send_notification(token, payload)
+
     save_settings(s)
     return json.dumps(response)
 

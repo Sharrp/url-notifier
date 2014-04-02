@@ -7,9 +7,7 @@ Server:
 – Add complete logging
 
 Alfred Workflow:
-– Status for sended link
 – Multiple words device names
-– Encode cyrillic symbols in urls
 – [pu rm] should already suggests devices to delete
 
 
