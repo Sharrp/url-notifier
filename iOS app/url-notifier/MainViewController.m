@@ -99,9 +99,12 @@
                                {
                                    NSString *udid = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
                                    NSLog(@"Received udid: %@", udid);
-                                   self.udidStatusLabel.text = @"Your device ID is";
-                                   self.udidLabel.text = udid;
-                                   self.udidLabel.hidden = NO;
+                                   dispatch_async(dispatch_get_main_queue(), ^{
+                                       self.udidStatusLabel.text = @"Your device ID is";
+                                       self.udidLabel.text = udid;
+                                       self.udidLabel.hidden = NO;
+                                       [self.udidActivityIndicator stopAnimating];
+                                   });
                                    
                                    [[NSUserDefaults standardUserDefaults] setObject:udid forKey:@"udid"];
                                    [[NSUserDefaults standardUserDefaults] setObject:deviceToken forKey:@"last_token"];
@@ -109,12 +112,13 @@
                                }
                                else
                                {
-                                   self.udidStatusLabel.text = @"Can't get device id";
-                                   self.getIdButton.hidden = NO;
-                                   NSLog(@"Error on sending token: %@", error);
+                                   dispatch_async(dispatch_get_main_queue(), ^{
+                                       self.udidStatusLabel.text = @"Can't get device id";
+                                       self.getIdButton.hidden = NO;
+                                       [self.udidActivityIndicator stopAnimating];
+                                       NSLog(@"Error on sending token: %@", error);
+                                   });
                                }
-                               
-                               [self.udidActivityIndicator stopAnimating];
                            }];
 }
 

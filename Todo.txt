@@ -1,15 +1,16 @@
 iOS App:
-– Remove delay in showing received device id
 – Icon
 
 Server:
 – Add verification for input arguments in every method
 – Remove ambigious symbols from hash generator
+– Add complete logging
 
 Alfred Workflow:
 – Status for sended link
 – Multiple words device names
 – Encode cyrillic symbols in urls
+– [pu rm] should already suggests devices to delete
 
 
 == Later ==
@@ -22,7 +23,7 @@ iOS App:
 – Add iPad support
 
 Alfred Workflow:
-– Minor: shit with russian symbols (again)
+None
 
 Unit tests:
 – iOS
