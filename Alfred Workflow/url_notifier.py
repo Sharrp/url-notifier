@@ -140,9 +140,17 @@ def execute(command):
         url = server + 'url/'
         req = urllib2.Request(url=url, data=json.dumps(data))
         req.add_header('Content-Type', 'application/json')
-        urllib2.urlopen(req)
-        # print(r.read())
-        print('Url sent')
+        f = urllib2.urlopen(req)
+        resp = json.loads(f.read())
+        success = True
+        for device in resp:
+            if resp[device] != 200:
+                success = False
+                break
+        if success:
+            print('Url sent')
+        else:
+            print('There are troubles. Send url did not')
     elif data['command'] == 'add':
         # Checking that udid exists
         url = server + 'client/'
