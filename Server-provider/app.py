@@ -2,8 +2,7 @@ import json
 import os
 import random
 import re
-from flask import Flask
-from flask import request
+from flask import Flask, request
 from apns import APNs, Payload
 
 apns = APNs(use_sandbox=True, cert_file='cert.pem', key_file='key.pem')
@@ -28,11 +27,16 @@ def save_settings(s):
 # Short id. Not so long (since it's for humans) and not just a serial number
 def human_hash(uid):
     uid_hash = ''
-    symbols = [str(chr(i+65)) for i in range(26)] # uppercase laters
-    symbols.extend([str(chr(i+97)) for i in range(26)]) # lowercase
+    symbols = [str(chr(65+i)) for i in range(26)] # uppercase laters
+    symbols.extend([str(chr(97+i)) for i in range(26)]) # lowercase
     symbols.extend([str(i) for i in range(10)]) # digits
-    for i in range(4): # 62 ^ 4 = 14 776 336, that's enough
-        uid_hash += symbols[random.randint(0, 61)]
+    toRemove = '10olOI' # they're too ambiguous
+    count = 26 + 26 + 10 - len(toRemove)
+    for ch in toRemove:
+        symbols.remove(ch)
+
+    for i in range(4): # 56 ^ 4 = 9 834 496, that's enough
+        uid_hash += symbols[random.randint(0, count - 1)]
     return uid_hash + str(uid)
 
 # If could - returns domain, otherwise - url or it's first 20 symbols
