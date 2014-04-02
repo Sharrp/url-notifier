@@ -76,11 +76,50 @@ def process(query):
     query = query.decode('utf-8')
     items = [] # items to show in alfred's list
     parts = query.split(' ') # it should be like these: {url}, rm {device}, add {device}
+    # Note: parts[0] – not 'pu', parts[0] – add, rm, or url (query doesn't contain pu)
 
-    if len(parts) == 1: # trying to send url (or empty command)
+    if query == 'add':
+        items.append(help_item('Enter device\'s id and name'))
+    elif query.startswith('add '):
+        if len(parts) == 2: # [pu add XXX]
+            if len(parts[1]) < 5:
+                items.append(help_item('Device id should be at least 5 chars long'))
+            else:
+                items.append(help_item('Enter device name'))
+        else: # [pu add XXXX YYYYY...]
+            if len(parts[1]) < 5:
+                items.append(help_item('Device id should be at least 5 chars long'))
+            elif len(parts[2]) == 0:
+                items.append(help_item('Enter device name'))
+            else: # there are all required parameters here
+                name = ' '.join(parts[2:])
+                devices = get_devices()
+                if parts[1] in devices or name in devices.values(): # device already added
+                    items.append(help_item('Device already added'))
+                else:
+                    arg = '{"command":"add","udid":"' + parts[1] + \
+                        '","name":"' + name + '"}'
+                    items.append(make_item('1', arg, 'Add this device'))
+    elif query == 'rm' or query.startswith('rm '): # [pu rm XXXX...]
+        filtr = ''
+        if len(parts) > 1:
+            filtr = ' '.join(parts[1:]).lower()
+        devices = get_devices()
+        num = 1
+        if len(devices) == 0:
+            items.append(help_item('No devices added yet'))
+        else:
+            for d in devices: # filter existing devices
+                if filtr in d.lower() or filtr in devices[d].lower():
+                    arg = '{"command":"remove","udid":"' + d + '"}'
+                    items.append(make_item(str(num), arg, 'Remove '+ devices[d], 'Device id: ' + d))
+                    num += 1
+            if len(items) == 0:
+                items.append(help_item('No devices with "' + parts[1] + '" in id or name'))
+    elif len(parts) == 1: # url sendng
         if not is_valid_url(query):
             items.append(help_item('Not an url'))
-        else: # Send command
+        else:
             devices = get_devices()
             if len(devices) == 0: # no devices added yet
                 items.append(help_item('You didn\'t add devices'))
@@ -95,40 +134,8 @@ def process(query):
                     arg = '{"command":"send","url":"' + query + '","udids":["' + d + '"]}'
                     items.append(make_item(str(num), arg, 'Send to '+ devices[d], 'Device id: ' + d))
                     num += 1
-    elif len(parts) == 2: # remove command and hint for add command
-        if parts[0] == 'rm':
-            devices = get_devices()
-            num = 1
-            if len(devices) == 0:
-                items.append(help_item('No devices added yet'))
-            for d in devices: # filter existing devices
-                if parts[1] in d or parts[1] in devices[d]:
-                    arg = '{"command":"remove","udid":"' + d + '"}'
-                    items.append(make_item(str(num), arg, 'Remove '+ devices[d], 'Device id: ' + d))
-                    num += 1
-            if len(items) == 0:
-                items.append(help_item('No devices with "' + parts[1] + '" in id or name'))
-        elif parts[0] == 'add':
-            items.append(help_item('Enter device id and name'))
-        else:
-            items.append(help_item('Unknown command'))
-    elif len(parts) == 3:
-        if parts[0] == 'add':
-            if len(parts[1]) > 4: # the shortest udid is 5 chars long
-                if len(parts[2]) < 1:
-                    items.append(help_item('Enter device name'))
-                else:
-                    devices = get_devices()
-                    if parts[1] in devices or parts[2] in devices.values(): # device already added
-                        items.append(help_item('Device already added'))
-                    else:
-                        arg = '{"command":"add","udid":"' + parts[1] + \
-                            '","name":"' + parts[2] + '"}'
-                        items.append(make_item('1', arg, 'Add this device'))
-            else:
-                items.append(help_item('Not a valid device id'))
-    else:
-        items.append(help_item('Too much parameters'))
+    else: # something unknown
+        items.append(help_item('There is no such command'))
 
     print(generate_xml(items))
 

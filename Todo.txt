@@ -3,12 +3,10 @@ iOS App:
 
 Server:
 – Add verification for input arguments in every method
-– Remove ambigious symbols from hash generator
 – Add complete logging
 
 Alfred Workflow:
-– Multiple words device names
-– [pu rm] should already suggests devices to delete
+None
 
 
 == Later ==
