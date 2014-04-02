@@ -59,11 +59,14 @@ def default_response():
 # Receives token from device and respond with udid
 @app.route('/device/', methods=['POST'])
 def update_device_token():
-    s = read_settings()
+    if not request.json or 'did' not in request.json or 'token' not in request.json:
+        return '{"error":"Request should contain json serialized parameters: \
+            device id (key - did) and APNS token (key - token)"}'
     did = request.json['did'] # device id, received from phone
     token = request.json['token'] # APNS token
     print('Device update: ' + did)
     print('Received token: ' + token)
+    s = read_settings()
     udid = '' # user-friendly device id
     # 2 dictionaries: udid -> token (where to send), did -> udid (is it in base)
     if did in s['did2udid']:
@@ -80,9 +83,21 @@ def update_device_token():
 # Pushes url to multiple devices
 @app.route('/url/', methods=['POST'])
 def send_url_to_device():
+    # Data validation
+    if not request.json or 'url' not in request.json or 'udids' not in request.json:
+        return '{"error":"Request should contain json serialized parameters: \
+            url (key - url) and array with destination devices\'s udids (key - udids)"}'
     url = request.json['url']
     udids = request.json['udids']
-    # add http to url
+    if not isinstance(url, basestring) or len(url) == 0:
+        return '{"error":"Url - should be non-empty string"}'
+    if not isinstance(udids, list) or len(udids) == 0:
+        return '{"error":"Udids should be a non-empty array with string-ids"}'
+    for udid in udids:
+        if not isinstance(udid, basestring) or len(udid) == 0:
+            return '{"error":"Every udid in udids should be a non-empty string"}'
+
+    # Add http to url
     url = url.strip()
     if not url.startswith('http://') and not url.startswith('https://'):
         url = 'http://' + url
@@ -126,7 +141,12 @@ def get_last_url():
 # Checks that received mobile client exists in database
 @app.route('/client/', methods=['POST'])
 def check_client():
+    if not request.json or 'udid' not in request.json:
+        return '{"error":"Request should contain user device id (key - did) \
+            as json serialized parameter"}'
     udid = request.json['udid']
+    if not isinstance(udid, basestring) or len(udid) == 0:
+        return '{"error":"Udid should be a non-empty string"}'
     print('Client check: ' + udid)
     s = read_settings()
     if udid in s['udid2token']:
@@ -136,5 +156,4 @@ def check_client():
 
 
 if __name__ == "__main__":
-    app.run(debug=True)
-    # app.run()
+    app.run()

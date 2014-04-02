@@ -2,7 +2,6 @@ iOS App:
 – Icon
 
 Server:
-– Add verification for input arguments in every method
 – Add complete logging
 
 Alfred Workflow:
