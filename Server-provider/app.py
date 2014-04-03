@@ -115,8 +115,15 @@ def send_url_to_device():
         else:
             response[udid] = 404
             continue
-        url_data = {"url":url, "len":len(url)} # url length for checking data consistency on client
-        payload = Payload(alert=readable_url(url), custom=url_data)
+        # Since max payload size is 256 bytes we should crop long urls and client will
+        # ask server for /lasturl because len(url) != payload[len]
+        url_data = {"len":len(url)} # url length for checking data consistency on client
+        readable = readable_url(url)
+        if len(url) + len(readable_url(url)) > 200:
+            url = ''
+        url_data["url"] = url
+        payload = Payload(alert=readable, custom=url_data)
+        print(payload)
         apns.gateway_server.send_notification(token, payload)
 
     save_settings(s)
