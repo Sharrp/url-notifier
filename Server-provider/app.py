@@ -43,13 +43,13 @@ def human_hash(uid):
 def readable_url(url):
     r = re.compile('https?://([^?/&]+)')
     m = r.match(url)
+    nice_url = url
     if m:
-        return m.group(1)
+        nice_url = m.group(1)
+    if len(nice_url) > 20:
+        return url[:20] + '...'
     else:
-        if len(url) > 20:
-            return url[:20] + '...'
-        else:
-            return url
+        return url
 
 
 @app.route('/', methods=['GET'])
@@ -106,13 +106,17 @@ def send_url_to_device():
     print('Devices: ' + ', '.join(udids))
     s = read_settings()
 
+    print('1')
     for udid in udids:
         token = ''
+        print('2')
         if udid in s['udid2token']:
+            print('3')
             token = s['udid2token'][udid]
             s['urls'][udid] = url
             response[udid] = 200
         else:
+            print('4')
             response[udid] = 404
             continue
         # Since max payload size is 256 bytes we should crop long urls and client will
@@ -122,6 +126,9 @@ def send_url_to_device():
         if len(url) + len(readable_url(url)) > 200:
             url = ''
         url_data["url"] = url
+        print('Url data:')
+        print(url_data)
+        print('Readable: ' + readable)
         payload = Payload(alert=readable, custom=url_data)
         print(payload)
         apns.gateway_server.send_notification(token, payload)

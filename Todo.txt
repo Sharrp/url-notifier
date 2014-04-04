@@ -2,7 +2,6 @@ iOS App:
 – Icon
 
 Server:
-– Fake length for too long
 – Add complete logging
 
 Alfred Workflow:
