@@ -2,7 +2,7 @@ iOS App:
 – Icon
 
 Server:
-– Add complete logging
+None
 
 Alfred Workflow:
 None
