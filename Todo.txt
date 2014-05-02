@@ -2,7 +2,9 @@ iOS App:
 – Icon
 
 Server:
-None
+- Set timeout for push to APNS (and try again maybe)
+- Long url not cutted in device push message:
+http://zelo.yandex.ru/touchsearch?lr=213&text=часы&noredirect=1&test-id=1&bshost=inferno:9090&rearr=markethost%3Dmsh01ft:17053§
 
 Alfred Workflow:
 None

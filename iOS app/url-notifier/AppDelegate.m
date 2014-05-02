@@ -15,7 +15,7 @@
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]] ;
     
     self.mainVC = [[MainViewController alloc] initWithNibName:@"MainViewController" bundle:nil];
-    NSDictionary *payload = [launchOptions objectForKey:UIApplicationLaunchOptionsRemoteNotificationKey];
+    NSDictionary *payload = launchOptions[UIApplicationLaunchOptionsRemoteNotificationKey];
     NSLog(@"Payload: %@", payload);
     if (payload != nil && payload[@"url"] != nil)
     {

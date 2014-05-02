@@ -13,7 +13,7 @@ app = Flask(__name__)
 log_file = './log.txt'
 
 def log(entry):
-    entry = "[" + strftime("%Y-%m-%d %H:%M:%S") + "] " + str(entry)
+    entry = "[" + strftime("%Y-%m-%d %H:%M:%S") + "] " + str(entry.encode('utf-8'))
     # console
     print(entry)
     # file
@@ -61,10 +61,9 @@ def human_hash(uid):
 def readable_url(url):
     r = re.compile('https?://([^?/&]+)')
     m = r.match(url)
-    nice_url = url
     if m:
-        nice_url = m.group(1)
-    if len(nice_url) > 20:
+        url = m.group(1)
+    if len(url) > 20:
         return url[:20] + '...'
     else:
         return url
@@ -126,8 +125,8 @@ def send_url_to_device():
     if not url.startswith('http://') and not url.startswith('https://'):
         url = 'http://' + url
     response = {}
-    print('Url: ' + url)
-    print('Devices: ' + ', '.join(udids))
+    log('Url: ' + url)
+    log('Devices: ' + ', '.join(udids))
     s = read_settings()
 
     for udid in udids:
@@ -145,7 +144,8 @@ def send_url_to_device():
         # ask server for /lasturl because len(url) != payload[len]
         url_data = {"len":len(url)} # url length for checking data consistency on client
         readable = readable_url(url)
-        if len(url) + len(readable_url(url)) > 200:
+        if len(url) + len(readable) > 200:
+            log('Url cleaned, sum is ' + str(len(url) + len(readable)))
             url = ''
         url_data["url"] = url
         payload = Payload(alert=readable, custom=url_data)
@@ -163,15 +163,21 @@ def send_url_to_device():
 def get_last_url():
     log('/lasturl/: start')
     did = request.json['did'] # device id, received from phone
+    # did = 'B2E2CA07-3283-490A-8916-64EF68C9FE91'
+    log('/lasturl/: did: ' + did)
     s = read_settings()
     if did in s['did2udid']:
         udid = s['did2udid'][did]
+        log('/lasturl/: udid: ' + udid)
+        if udid not in s['urls']:
+            log('/lasturl/: no url for device did: ' + udid)
+            return '{"error":"No url for this device"}'
         url = s['urls'][udid]
         if url:
             log('/lasturl/: found url for device did: ' + udid + '\n' + url)
             return '{"url":"' + url + '"}'
         else:
-            log('/lasturl/: no url for device did: ' + udid)
+            log('/lasturl/: empty url for device did: ' + udid)
             return '{"error":"No url for this device"}'
     else:
         log('/lasturl/: did not found in base: ' + did)
@@ -199,5 +205,8 @@ def check_client():
         return '{"client_exists":false}'
 
 
-if __name__ == "__main__":
-    app.run()
+# if __name__ == "__main__":
+#     app.run()
+
+url = 'https://www.google.ru/search?num=100&q=os+x+apple+logo+menu+gray+rectangle&oq=os+x+apple+logo+menu+gray+rectangle&gs_l=serp.3...22148.22753.0.23278.5.5.0.0.0.0.128.407.4j1.5.0....0...1c.1.42.serp..1.4.350.TrSZw9-qN90'
+print(readable_url(url))
